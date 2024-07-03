@@ -53,7 +53,7 @@ rm -rf .git
 4. Ejecuta el archivo `main.py`:
 
 ```sh
-python3 main.py
+python main.py
 ```
 
 # Uso del Programa
