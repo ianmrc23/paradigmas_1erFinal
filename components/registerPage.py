@@ -1,7 +1,8 @@
-from utils.os_utils import save_pickle_file
+from utils.utils import file_exists, save_pickle_file
 from schemas.client_manager import Client
 
 import tkinter as tk
+from tkinter import messagebox
 
 
 class RegisterPage(tk.Frame):
@@ -9,7 +10,7 @@ class RegisterPage(tk.Frame):
         super().__init__(parent)
         self.controller = controller
 
-        label = tk.Label(self, text="Register", font=("Arial", 18))
+        label = tk.Label(self, text="REGISTER", font=("Arial", 18))
         label.pack(pady=10)
 
         tk.Label(self, text="ID: ").pack()
@@ -36,31 +37,39 @@ class RegisterPage(tk.Frame):
         self.entry_distance = tk.Entry(self)
         self.entry_distance.pack()
 
-        self.lbl_message = tk.Label(self, text="", fg="red")
-        self.lbl_message.pack(pady=5)
-
-        register_button = tk.Button(self, text="Register",
-                                    command=self.register_user)
+        register_button = tk.Button(self, text="Register", command=self.register_user)
         register_button.pack(pady=10)
 
-        back_button = tk.Button(self, text="Back",
-                                command=lambda: controller.show_frame("StartPage"))
+        back_button = tk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
         back_button.pack(pady=10)
 
     def register_user(self):
+        client_id = self.entry_id.get()
+        client_name = self.entry_name.get()
+        client_email = self.entry_email.get()
+        client_password = self.entry_password.get()
+        client_address = self.entry_address.get()
+        client_distance = self.entry_distance.get()
+
+        if not (client_id and client_name and client_email and client_password and client_address and client_distance):
+            messagebox.showerror(title=None, message="Please fill in all fields.")
+            return
+
+        if file_exists(f"{client_email}.pickle"):
+            messagebox.showerror(title=None, message="Email is already registered.")
+            return
+
         try:
-            client_id = int(self.entry_id.get())
-            client_name = self.entry_name.get()
-            client_email = self.entry_email.get()
-            client_password = self.entry_password.get()
-            client_address = self.entry_address.get()
-            client_distance = float(self.entry_distance.get())
+            client_id = int(client_id)
+            client_distance = float(client_distance)
 
             if client_id <= 0:
-                raise ValueError("ID must be a positive integer.")
+                messagebox.showerror(title=None, message="ID must be a positive integer.")
+                return
 
             if client_distance < 0:
-                raise ValueError("Distance must be a non-negative number.")
+                messagebox.showerror(title=None, message="Distance must be a non-negative number.")
+                return
 
             new_client = Client(
                 client_id=client_id,
@@ -76,4 +85,4 @@ class RegisterPage(tk.Frame):
             self.controller.show_frame("StartPage")
 
         except ValueError as e:
-            self.lbl_message.config(text=f"Error: {e}", fg="red")
+            messagebox.showerror(title=None, message=f"Error: {e}")

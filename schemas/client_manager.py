@@ -1,6 +1,5 @@
 from typing import List
-
-from utils.os_utils import save_pickle_file
+from utils.utils import save_pickle_file
 
 
 class Client:

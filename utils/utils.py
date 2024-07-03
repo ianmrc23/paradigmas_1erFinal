@@ -1,5 +1,41 @@
+import os
+import pickle
 from schemas.product_manager import Product, Category
-from utils.os_utils import get_main_dir, save_pickle_file
+
+def get_main_dir(subdir=""):
+    """
+    Obtiene el directorio principal del proyecto.
+    """
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    main_dir = os.path.join(current_dir, "..")
+    if subdir:
+        return os.path.join(main_dir, subdir)
+    return main_dir
+
+
+def save_pickle_file(data, filename):
+    """
+    Guarda datos en un archivo pickle.
+    """
+    filepath = get_main_dir(f"db/{filename}")
+    with open(filepath, "wb") as file:
+        pickle.dump(data, file)
+
+
+def load_pickle_file(filename):
+    """
+    Carga datos desde un archivo pickle.
+    """
+    filepath = get_main_dir(f"db/{filename}")
+    with open(filepath, "rb") as file:
+        return pickle.load(file)
+
+
+def file_exists(file_path):
+    """
+    Verifica si un archivo existe en la ruta especificada.
+    """
+    return os.path.exists(get_main_dir(f"db/{file_path}"))
 
 
 def read_inventory():

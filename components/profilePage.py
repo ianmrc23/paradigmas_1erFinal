@@ -32,6 +32,7 @@ class ProfilePage(tk.Frame):
 
     def update_profile(self):
         client = self.controller.client
+        
         self.id_label.config(text=f"ID: {client.client_id}")
         self.name_label.config(text=f"Name: {client.client_name}")
         self.email_label.config(text=f"Email: {client.client_email}")

@@ -32,33 +32,36 @@ class StoreApp(tk.Tk):
         frame.tkraise()
 
         if page_name == "StartPage":
-            self.geometry("400x220")
+            window_height = 220
         elif page_name == "LoginPage":
-            self.geometry("400x300")
+            window_height = 300
         elif page_name == "RegisterPage":
-            self.geometry("400x500")
+            window_height = 500
         elif page_name == "MainPage":
-            self.geometry("400x330")
+            window_height = 350
         elif page_name == "ProfilePage":
             frame.update_profile()
-            self.geometry("400x310")
+            window_height = 310
         elif page_name == "CheckoutPage":
-            self.geometry("400x500")
+            window_height = 500
         elif page_name == "AddProductPage":
-            self.geometry("400x600")
+            window_height = 600
         elif page_name == "CartPage":
-            self.geometry("400x600")
+            window_height = 420
 
-    def reset_page(self, page_name):
-        if page_name in self.frames:
-            self.frames[page_name].destroy()
-            del self.frames[page_name]
+        self.geometry(f"400x{window_height}")
 
-        container = self.frames["MainPage"].master
-        frame_class = globals()[page_name]
-        new_frame = frame_class(parent=container, controller=self)
-        self.frames[page_name] = new_frame
-        new_frame.grid(row=0, column=0, sticky="nsew")
+    def reset_page(self, *page_names):
+        for page_name in page_names:
+            if page_name in self.frames:
+                self.frames[page_name].destroy()
+                del self.frames[page_name]
+
+            container = self.frames["MainPage"].master
+            frame_class = globals()[page_name]
+            new_frame = frame_class(parent=container, controller=self)
+            self.frames[page_name] = new_frame
+            new_frame.grid(row=0, column=0, sticky="nsew")
 
 
 class StartPage(tk.Frame):
@@ -66,19 +69,16 @@ class StartPage(tk.Frame):
         super().__init__(parent)
         self.controller = controller
 
-        label = tk.Label(self, text="Welcome to the Store", font=("Arial", 18))
+        label = tk.Label(self, text="WELCOME TO THE STORE", font=("Arial", 18))
         label.pack(pady=10, anchor='center')
 
-        register_button = tk.Button(self, text="Register",
-                                    command=lambda: controller.show_frame("RegisterPage"))
+        register_button = tk.Button(self, text="Register", command=lambda: controller.show_frame("RegisterPage"))
         register_button.pack(pady=10, anchor='center')
 
-        login_button = tk.Button(self, text="Login",
-                                 command=lambda: controller.show_frame("LoginPage"))
+        login_button = tk.Button(self, text="Login", command=lambda: controller.show_frame("LoginPage"))
         login_button.pack(pady=10, anchor='center')
 
-        close_button = tk.Button(self, text="Close",
-                                 command=controller.quit)
+        close_button = tk.Button(self, text="Close", command=controller.quit)
         close_button.pack(pady=10, anchor='center')
 
 
@@ -90,20 +90,16 @@ class MainPage(tk.Frame):
         label = tk.Label(self, text="MAIN MENU", font=("Arial", 18))
         label.pack(pady=10)
 
-        btn_add_product = tk.Button(
-            self, text="Add Product", command=self.open_add_product)
+        btn_add_product = tk.Button(self, text="Add Product", command=self.open_add_product)
         btn_add_product.pack(pady=10)
 
-        btn_my_cart = tk.Button(self, text="My Cart",
-                                command=self.open_my_cart)
+        btn_my_cart = tk.Button(self, text="My Cart", command=self.open_my_cart)
         btn_my_cart.pack(pady=10)
 
-        btn_checkout = tk.Button(
-            self, text="Checkout", command=self.open_checkout)
+        btn_checkout = tk.Button(self, text="Checkout", command=self.open_checkout)
         btn_checkout.pack(pady=10)
 
-        btn_profile = tk.Button(self, text="Profile",
-                                command=self.open_profile)
+        btn_profile = tk.Button(self, text="Profile", command=self.open_profile)
         btn_profile.pack(pady=10)
 
         btn_logout = tk.Button(self, text="Logout", command=self.logout)
