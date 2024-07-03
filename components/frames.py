@@ -4,7 +4,6 @@ from components.checkPage import CheckoutPage
 from components.loginPage import LoginPage
 from components.profilePage import ProfilePage
 from components.registerPage import RegisterPage
-
 import tkinter as tk
 
 

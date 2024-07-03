@@ -1,13 +1,13 @@
-from utils.utils import file_exists, save_pickle_file
+from schemas.file_manager import FileManager
 from schemas.client_manager import Client
-
-import tkinter as tk
 from tkinter import messagebox
+import tkinter as tk
 
 
 class RegisterPage(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent)
+        self.file_manager = FileManager()
         self.controller = controller
 
         label = tk.Label(self, text="REGISTER", font=("Arial", 18))
@@ -37,10 +37,12 @@ class RegisterPage(tk.Frame):
         self.entry_distance = tk.Entry(self)
         self.entry_distance.pack()
 
-        register_button = tk.Button(self, text="Register", command=self.register_user)
+        register_button = tk.Button(
+            self, text="Register", command=self.register_user)
         register_button.pack(pady=10)
 
-        back_button = tk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
+        back_button = tk.Button(
+            self, text="Back", command=lambda: controller.show_frame("StartPage"))
         back_button.pack(pady=10)
 
     def register_user(self):
@@ -52,11 +54,13 @@ class RegisterPage(tk.Frame):
         client_distance = self.entry_distance.get()
 
         if not (client_id and client_name and client_email and client_password and client_address and client_distance):
-            messagebox.showerror(title=None, message="Please fill in all fields.")
+            messagebox.showerror(
+                title=None, message="Please fill in all fields.")
             return
 
-        if file_exists(f"{client_email}.pickle"):
-            messagebox.showerror(title=None, message="Email is already registered.")
+        if self.file_manager.file_exists(f"{client_email}.pickle"):
+            messagebox.showerror(
+                title=None, message="Email is already registered.")
             return
 
         try:
@@ -64,11 +68,13 @@ class RegisterPage(tk.Frame):
             client_distance = float(client_distance)
 
             if client_id <= 0:
-                messagebox.showerror(title=None, message="ID must be a positive integer.")
+                messagebox.showerror(
+                    title=None, message="ID must be a positive integer.")
                 return
 
             if client_distance < 0:
-                messagebox.showerror(title=None, message="Distance must be a non-negative number.")
+                messagebox.showerror(
+                    title=None, message="Distance must be a non-negative number.")
                 return
 
             new_client = Client(
@@ -80,7 +86,8 @@ class RegisterPage(tk.Frame):
                 client_distance=client_distance
             )
 
-            save_pickle_file(new_client, f"{client_email}.pickle")
+            self.file_manager.save_pickle_file(
+                new_client, f"{client_email}.pickle")
 
             self.controller.show_frame("StartPage")
 

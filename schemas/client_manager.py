@@ -1,21 +1,8 @@
 from typing import List
-from utils.utils import save_pickle_file
+from schemas.file_manager import FileManager
 
 
 class Client:
-    """
-    Representa un cliente de la tienda.
-
-    Attributes:
-        client_id (int): El ID del cliente.
-        client_name (str): El nombre del cliente.
-        client_email (str): El email del cliente.
-        client_password (str): La contraseña del cliente.
-        client_address (str): La dirección del cliente.
-        client_distance_from_store (float): La distancia del cliente a la tienda.
-        cart (List[dict]): El carrito de compras del cliente.
-    """
-
     def __init__(
         self,
         client_id: int,
@@ -32,11 +19,9 @@ class Client:
         self.client_address = client_address
         self.client_distance_from_store = client_distance
         self.cart: List[dict] = []
+        self.file_manager = FileManager()
 
     def calculate_totals(self):
-        """
-        Calcula el precio total y el peso total de los productos en el carrito.
-        """
         total_price: float = 0.0
         total_weight: float = 0.0
 
@@ -50,9 +35,6 @@ class Client:
         return total_price, total_weight
 
     def add_to_cart(self, product, quantity):
-        """
-        Agrega un producto al carrito del cliente.
-        """
         for item in self.cart:
             if item["product"].product_id == product.product_id:
                 item["quantity"] += quantity
@@ -61,4 +43,4 @@ class Client:
             cart_item = {"product": product, "quantity": quantity}
             self.cart.append(cart_item)
 
-        save_pickle_file(self, f"{self.client_email}.pickle")
+        self.file_manager.save_pickle_file(self, f"{self.client_email}.pickle")

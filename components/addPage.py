@@ -1,6 +1,5 @@
-from utils.utils import save_pickle_file, load_pickle_file
-
 from tkinter import messagebox
+from schemas.file_manager import FileManager
 import tkinter as tk
 
 
@@ -8,7 +7,8 @@ class AddProductPage(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent)
         self.controller = controller
-        self.categories = load_pickle_file("inventory.pickle")
+        self.file_manager = FileManager()
+        self.categories = self.file_manager.load_pickle_file("inventory.pickle")
 
         self.label = tk.Label(
             self, text="ADD PRODUCT TO CART", font=("Arial", 18))
@@ -16,7 +16,8 @@ class AddProductPage(tk.Frame):
 
         self.show_categories()
 
-        btn_back = tk.Button(self, text="Back", command=lambda: controller.show_frame("MainPage"))
+        btn_back = tk.Button(
+            self, text="Back", command=lambda: controller.show_frame("MainPage"))
         btn_back.pack(pady=10)
 
     def show_categories(self):
@@ -47,7 +48,8 @@ class AddProductPage(tk.Frame):
         btn_back = tk.Button(self, text="Back", command=self.show_categories)
         btn_back.pack(pady=10)
 
-        btn_back_main_menu = tk.Button(self, text="Main Menu", command=lambda: self.controller.show_frame("MainPage"))
+        btn_back_main_menu = tk.Button(
+            self, text="Main Menu", command=lambda: self.controller.show_frame("MainPage"))
         btn_back_main_menu.pack(pady=10)
 
     def select_product(self, product):
@@ -64,13 +66,16 @@ class AddProductPage(tk.Frame):
         self.quantity_entry = tk.Entry(self)
         self.quantity_entry.pack(pady=5)
 
-        btn_add_to_cart = tk.Button(self, text="Add to Cart", command=lambda: self.add_to_cart(product))
+        btn_add_to_cart = tk.Button(
+            self, text="Add to Cart", command=lambda: self.add_to_cart(product))
         btn_add_to_cart.pack(pady=10)
 
-        btn_back = tk.Button(self, text="Back", command=lambda: self.show_products(self.current_category))
+        btn_back = tk.Button(
+            self, text="Back", command=lambda: self.show_products(self.current_category))
         btn_back.pack(pady=10)
 
-        btn_back_main_menu = tk.Button(self, text="Main Menu", command=lambda: self.controller.show_frame("MainPage"))
+        btn_back_main_menu = tk.Button(
+            self, text="Main Menu", command=lambda: self.controller.show_frame("MainPage"))
         btn_back_main_menu.pack(pady=10)
 
         self.current_category = next(
@@ -81,19 +86,22 @@ class AddProductPage(tk.Frame):
             quantity = int(self.quantity_entry.get())
             if 0 < quantity <= product.product_quantity:
                 product.product_quantity -= quantity
-                
+
                 self.controller.client.add_to_cart(product, quantity)
-                
-                save_pickle_file(self.controller.client, f"{self.controller.client.client_email}.pickle")
-                save_pickle_file(self.categories, "inventory.pickle")
-                
+
+                self.file_manager.save_pickle_file(self.controller.client, f"{self.controller.client.client_email}.pickle")
+                self.file_manager.save_pickle_file(
+                    self.categories, "inventory.pickle")
+
                 self.show_products(self.current_category)
-                
-                messagebox.showinfo(title=None, message="Product added to cart successfully.")
+
+                messagebox.showinfo(
+                    title=None, message="Product added to cart successfully.")
             else:
                 messagebox.showerror(title=None, message="Invalid quantity.")
         except ValueError:
-            messagebox.showerror(title=None, message="Please enter a valid number.")
+            messagebox.showerror(
+                title=None, message="Please enter a valid number.")
 
     def clear_frame(self):
         for widget in self.winfo_children():
