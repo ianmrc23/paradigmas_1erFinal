@@ -1,6 +1,6 @@
-from tkinter import messagebox
 from schemas.file_manager import FileManager
 import tkinter as tk
+from tkinter import messagebox
 
 
 class AddProductPage(tk.Frame):
